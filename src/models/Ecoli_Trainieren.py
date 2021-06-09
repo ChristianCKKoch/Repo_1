@@ -14,7 +14,7 @@ import sys
 # sys.path.append("..")
 
 #sys.path.append("C:\\Users\\Chris\\Data Science Programmierung\\Repo_DS_Teil1\\src\\data\\")
-sys.path.append("../data/")
+sys.path.append("src/data/")
 from Preprocessor import Preprocessor
 
 class Classifier:
@@ -91,7 +91,7 @@ class Classifier:
 
 def get_classifier():
     #Daten einlesen
-    data = pd.read_excel('C:\\Users\\Chris\\Data Science Programmierung\\Repo_DS_Teil1\\data\\raw\\U bung kNN Klassifizierung Ecoli.xls', sheet_name=0)
+    data = pd.read_excel('data/raw/U bung kNN Klassifizierung Ecoli.xls', sheet_name=0)
     X = data.loc[:,data.columns != "Target"]
     y = data["Target"]
 
@@ -110,13 +110,13 @@ def get_classifier():
     bestes_model = sorted(resultat, key=itemgetter(1), reverse=True)[0][2]
     
     # Model in der Datei speichern
-    clf_file = "C:\\Users\\Chris\\Data Science Programmierung\\Repo_DS_Teil1\\models\\classifier_object.pickle"
+    clf_file = "models/classifier_object.pickle"
     f = open(clf_file, 'wb')
     pi.dump(bestes_model, f)
     f.close()
 
     #Scaler auch in Datei speichern
-    sca_file = "C:\\Users\\Chris\\Data Science Programmierung\\Repo_DS_Teil1\\models\\scaler_object.pickle"
+    sca_file = "models/scaler_object.pickle"
     f = open(sca_file, 'wb')
     pi.dump(scaler, f)
     f.close()
