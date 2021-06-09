@@ -20,5 +20,8 @@ jobs:
           with:
             name: classifier_object.pickle
             path: models/classifier_object.pickle
+        - name: Archive production artifacts
+          uses: actions/upload-artifact@v2
+          with:
             name: scaler_object.pickle
             path: models/scaler_object.pickle
