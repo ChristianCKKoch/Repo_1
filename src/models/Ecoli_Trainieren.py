@@ -4,11 +4,13 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 import numpy as np
 import pandas as pd
 import pickle as pi
 from operator import itemgetter, attrgetter
+import matplotlib.pyplot as plt
 import sys
 # sys.path.insert(0, "..")
 # sys.path.append("..")
@@ -87,6 +89,23 @@ class Classifier:
                 score = svm.score(X_test,y_test)
                 self.ergebnis.append(['support vector machine', score, svm])
 
+            #-----------------------
+            #MLP
+            #-----------------------
+            elif self.model == 'mlp':
+                mlp = MLPClassifier(hidden_layer_sizes=[100,100], max_iter=5000, solver='sgd'
+                , learning_rate='adaptive', learning_rate_init=0.01, n_iter_no_change=200, early_stopping=True)
+                mlp.fit(X_train, y_train)
+                score = mlp.score(X_test,y_test)
+                self.ergebnis.append(['multi-layer perceptron', score, mlp])
+                print("iterations: {}; layers: {}; loss: {}".format(mlp.n_iter_, mlp.n_layers_, mlp.loss_))
+                epochs = np.linspace(1,mlp.n_iter_, mlp.n_iter_)
+                
+                plt.plot(epochs, mlp.loss_curve_, label="Fehlerfunktion")
+                #plt.plot(weight,2* weight,label="Ableitung")
+                plt.show()
+
+
         return self.ergebnis
 
 def get_classifier():
@@ -96,7 +115,8 @@ def get_classifier():
     y = data["Target"]
 
     #Models spezifieren
-    models = {"rf":RandomForestClassifier, "dt":DecisionTreeClassifier, "knn":KNeighborsClassifier, "svm":SVC}
+    models = {"rf":RandomForestClassifier, "dt":DecisionTreeClassifier, "knn":KNeighborsClassifier, "svm":SVC, "mlp":MLPClassifier}
+    #models = {"mlp":MLPClassifier}
 
     #Daten preprocessen
     X_train, X_test, y_train, y_test, scaler = Preprocessor(X, y).get_data()
@@ -108,6 +128,7 @@ def get_classifier():
     #Bestes Ergebnis bestimmen und als Modell speichern
     print("Bestes Model ist: {} mit einer Akkuranz von {}%".format(sorted(resultat, key=itemgetter(1), reverse=True)[0][0],sorted(resultat, key=itemgetter(1), reverse=True)[0][1]*100))
     bestes_model = sorted(resultat, key=itemgetter(1), reverse=True)[0][2]
+    print("Alle Ergebnisse: {}".format(resultat))
     
     # Model in der Datei speichern
     clf_file = "models/classifier_object.pickle"
